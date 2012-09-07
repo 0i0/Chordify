@@ -1,0 +1,18 @@
+{
+	"BundleType": "Application",
+	"BundleIdentifier": "chordify",
+	"AppIcon": {
+		"36x18": "tutorial.png"
+	},
+	"AppName": {
+		"en": "Chordify"
+	},
+	"SupportedLanguages": [
+		"en"
+	],
+	"RequiredPermissions": [
+		"http://chordify.herokuapp.com"
+		,"http://*.herokuapp.com"
+		,"http://herokuapp.com"
+	]
+}

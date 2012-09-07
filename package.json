@@ -1,0 +1,23 @@
+{
+  "name": "Chordify",
+  "version": "0.0.1",
+  "description": "Chord app for Spotify",
+  "engines": {
+    "node": "0.6.x",
+    "npm":  "1.0.x"
+  },
+  "author": "Leo <0@0i0.io>",
+  "dependencies": {
+    "express": ">=0.0.1"
+    , "stylus" : ">=0.0.1"
+    , "jade" :">=0.0.1"
+    , "url" : ">= 0.0.1"
+    , "redis": ">=0.0.1"
+    , "redis-url": ">=0.0.1"
+    , "request" : ">= 0.0.1"
+    , "connect": ">=1.0.3 < 2"
+    , "jsdom" : ">= 0.0.1" 
+    , "underscore" :   ">= 0.0.1" 
+    , "connect-redis": ">=0.0.1"
+  }
+}
