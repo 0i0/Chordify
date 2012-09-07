@@ -23,7 +23,7 @@ client/Chordify/chordify.js line 37 to your local server
 secondly since this will probably never make it to be official spotify app center
 you need to got through a little trouble to install it
 
-Activate your account as developer here: https://developer.spotify.com/technologies/apps/
+Activate your account as developer here: [here](https://developer.spotify.com/technologies/apps/)
 
 than follow the tutorial
 
@@ -38,3 +38,6 @@ Wallaaaa, Play a song and you imidiatly will have the chords so you can play alo
 P.S.
 
 It is very unfortunate that art is commercialized!
+
+
+![demo](http://community.spotify.com/t5/image/serverpage/image-id/3352iBA04FE2FA9FA2BF6/image-size/original?v=mpbl-1&px=-1)
