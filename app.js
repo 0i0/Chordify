@@ -1,54 +1,66 @@
-var config = require('./config/config')(true) //DEBUG?
-
-// Dependencies.
-
 var express = require('express')
-  , request = require('request')
-  , redis = process.env.REDISTOGO_URL 
-        ? require('redis-url').connect(process.env.REDISTOGO_URL) 
-        : require('redis').createClient()
-  , RedisStore = require('connect-redis')(express)
-  , jsdom = require("jsdom")
-  , under = require("underscore")
-  , MemoryStore = require('connect').session.MemoryStore
+  , util = require('util')
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+var app = express()
 
-// Framework 
-var util = require('util')
+app.use(express.static(__dirname ))
 
-// Globals
-var app = require('express').createServer()
-  , sessionStore = new MemoryStore({})
-
-app.configure(function(){
-  app.set('views',__dirname + '/views')
-  app.set('view engine', 'jade')
-  app.set('view options', { layout: false })
-  app.use(express.bodyParser())
-  app.use(express.methodOverride())
-  app.use(express.static(__dirname + '/client'))
-  app.use(require('stylus').middleware({ src:'public' }))
-  app.use(express.cookieParser())
-  app.use(express.session({store: sessionStore, secret: config.sessionSecret}))
-  app.use(app.router)
+app.get('/',function(req,res){
+  res.render('index')
 })
+app.get('/api/getChords/:artist/:song', function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("content-type", "text/plain");
 
-// Routes
-require('./boot')( under
-                 ,app
-                 , config
-                 , util
-                 , request
-                 , redis
-                 , jsdom
-                 )
-
+  	artist = req.params.artist
+	song = req.params.song
+	var url = util.format('http://www.ultimate-guitar.com/search.php?search_type=title&value=%s+%s'
+		,artist.replace(' ','+')
+		,song.replace(' ','+')
+		);
+	console.log('url:',url)
+	JSDOM.fromURL(url, {}).then(dom => {
+  		var list = []
+  		var results = dom.window.document.querySelectorAll(".tresults tbody tr")
+  		for (var i = results.length - 1; i >= 0; i--) {
+  			var resline = results[i]
+  			  , ratingDom = resline.querySelector('.ratdig')
+  			  , linkDom = resline.querySelector("a")
+			  , typeDom = resline.querySelectorAll("td")[3]
+			var rating = ratingDom?ratingDom.innerHTML:-1
+			  , link = linkDom?linkDom.href:null
+			  , type = typeDom?typeDom.querySelector('strong').innerHTML:null
+			list.push({
+				link: link
+				,rating: rating
+				,type:type
+			})			
+		};
+		list.sort(function(b,a){
+			return b.rating < a.rating
+		})
+		list = list.filter(item => item.type == 'chords' )
+		if (list[0]) {
+			console.log(list[0].link)
+			JSDOM.fromURL(list[0].link, {}).then(dom => {
+				res.write(dom.window.document.querySelector('#cont').innerHTML)
+				res.end()
+			}).catch(function(e) {
+  				res.write(e);
+				res.end()
+			});
+		}else{
+			res.write('no chords found');
+			res.end()
+		}
+	}).catch(function(e) {
+  		res.write(e);
+		res.end() // "oh, no!"
+	});
+});
 if (!module.parent) {
-  var port = process.env.PORT || config.port
-  app.listen(port)
-  console.log('Express app started on port %d', port)
+  app.listen(process.env.PORT || 5000);
+  console.log('Express started on port 5000');
 }
-
-
-
-
-
